@@ -70,7 +70,13 @@ void placeWord(State* state, Word word, int row, int col, char direction){
 }
 
 void printBoard(State state){
+    printf("   ");
     for(int row = 0; row < 15; row++){
+        printf(" %2i ", row);
+    }
+    printf("\n");
+    for(int row = 0; row < 15; row++){
+        printf("%2i | ", row);
         for(int col = 0; col < 15; col++){
             if(state.board[row][col] > 'Z'){
                 printf(RED "%c" RESET, state.board[row][col] - ('a'-'A'));
@@ -78,13 +84,11 @@ void printBoard(State state){
             else{
                 printf("%c", state.board[row][col]);
             }
-            if(col != 14){
-                printf(" | ");
-            }
+            printf(" | ");
         }
         printf("\n");
         if(row != 14){
-            printf("_______________________________________________________\n");
+            printf("    ____________________________________________________________\n");
         }
     }
 }
