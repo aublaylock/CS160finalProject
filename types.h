@@ -3,30 +3,35 @@
 
 extern int letterValues[];
 
-typedef struct {
+typedef struct
+{
     int len;
-    char letters[16]; //Possible ending \0
+    char letters[16]; // Possible ending \0
 } Word;
 
-typedef struct {
+typedef struct
+{
     char letters[8];
 } Rack;
 
-typedef struct {
+typedef struct
+{
     char board[15][15];
 } State;
 
-typedef struct {
+typedef struct
+{
     int minLengthAcross;
     int minLengthDown;
 } Start;
 
-typedef struct {
+typedef struct
+{
     Start board[15][15];
 } Starts;
 
-
-typedef struct {
+typedef struct
+{
     int allowedAcross[26];
     int scoresAcross[26];
     int allowedVertical[26];
@@ -34,7 +39,8 @@ typedef struct {
     char forced;
 } Allowed;
 
-typedef struct {
+typedef struct
+{
     int row;
     int col;
     char direction;

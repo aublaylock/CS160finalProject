@@ -22,7 +22,10 @@ Word wordWithLetter(Word word, char letter){
 
 void printValidWordsFromLocation(HashSet* dict, Allowed allowed[][15], int minLen, int row, int col, Rack rack, int lettersPlayed, Word curWord, int currentLettersScore, int currentWordMultiplier, int crossWordsScore, Move* bestMoveSoFar, char direction){
     int pos = (direction == 'D') ? row : col;
+    
+    //If you're at an empty tile or the end of the board and your current word is a valid word
     if((pos == 15 || allowed[row][col].forced == ' ') && is_valid_word(dict, curWord.letters) && lettersPlayed >= minLen){
+        //check if it's the best word so far and update accordingly
         int moveScore = currentLettersScore * currentWordMultiplier + crossWordsScore + (50 * (lettersPlayed >= 7)); //bingo bonus
         if(moveScore > bestMoveSoFar->score){
             bestMoveSoFar->score = moveScore;
@@ -33,15 +36,19 @@ void printValidWordsFromLocation(HashSet* dict, Allowed allowed[][15], int minLe
             printf("Found word: %s; %c from (%i, %i) for a score of %i + %i + %i = %i\n", curWord.letters, direction, bestMoveSoFar->row, bestMoveSoFar->col, currentLettersScore * currentWordMultiplier, crossWordsScore, (50 * (lettersPlayed >= 7)), moveScore);
         }
     }
+    //if you're at the end of the board don't go out of bounds
     if(pos > 14){
         return;
     }
+
     int nextRow = row + (direction == 'D');
     int nextCol = col + (direction == 'R');
     char forcedLetter = allowed[row][col].forced;
+    //if you are at a tile that is already populated then 'place' that letter and move on
     if(forcedLetter != ' '){
         printValidWordsFromLocation(dict, allowed, minLen, nextRow, nextCol, rack, lettersPlayed, wordWithLetter(curWord, forcedLetter), currentLettersScore + letterValue(forcedLetter), currentWordMultiplier, crossWordsScore, bestMoveSoFar, direction);
     }
+    //otherwise try every letter valid letter at that tile that is in your rack and continue
     else{
         //for all of the letters
         for(int allowedIndex = 0; allowedIndex < 26; allowedIndex++){
@@ -72,6 +79,7 @@ void calculateStarts(Starts* starts, State state){
         }
     }
 
+    //for every position on the board
     for(int row = 0; row < 15; row++){
         for(int col = 0; col < 15; col++){
             //if there is a tile
@@ -96,6 +104,7 @@ void calculateStarts(Starts* starts, State state){
                     starts->board[row+1][col].minLengthDown = -1; //can't start below
                 }
 
+                //update positions above in the same column and at or above in adjacent columns
                 for(int updatingRow = row; (row - updatingRow) < 7 && updatingRow > 0; updatingRow--){
                     if(col - 1 > -1 && state.board[updatingRow][col-1] == ' '){
                         starts->board[updatingRow][col-1].minLengthDown = min((row - updatingRow)+1, starts->board[updatingRow][col-1].minLengthDown); //Update min length to get left adjacency
@@ -126,6 +135,7 @@ void calculateStarts(Starts* starts, State state){
                     starts->board[row][col+1].minLengthAcross = -1; //can't start to the right of a tile
                 }
 
+                //update positions to the left in the same row and at or to the left in adjacent rows
                 for(int updatingCol = col; (col - updatingCol) < 7 && updatingCol > 0; updatingCol--){
                     if(row - 1 > -1 && state.board[row-1][updatingCol] == ' '){
                         starts->board[row-1][updatingCol].minLengthAcross = min((col - updatingCol)+1, starts->board[row-1][updatingCol].minLengthAcross); //Update min length to get above adjacency

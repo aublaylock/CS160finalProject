@@ -3,13 +3,14 @@
 
 #define TABLE_SIZE 600013
 
-typedef struct {
+typedef struct
+{
     char **buckets;
     int size;
 } HashSet;
 
 HashSet *load_dictionary(const char *filename);
-int      is_valid_word(HashSet *set, const char *word);
-void     free_set(HashSet *set);
+int is_valid_word(HashSet *set, const char *word);
+void free_set(HashSet *set);
 
 #endif
